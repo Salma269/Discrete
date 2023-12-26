@@ -25,7 +25,7 @@ void calculateTruthTable() {
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 2; ++j) {
             for (int k = 0; k < 2; ++k) {
-                cout << K[i] << "\t" << M[j] << "\t" << A[k] << "\t" << evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j]))) << "\t\t" << evaluateOr(A[k], M[j]) << "\t\t" << evaluateOr(A[k], evaluateNot(K[i])) << endl;
+                cout << K[i] << "\t" << M[j] << "\t" << A[k] << "\t" << evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j]))) << "\t" << evaluateOr(A[k], M[j]) << "\t" << evaluateOr(A[k], evaluateNot(K[i])) << endl;
             }
         }
     }
@@ -35,7 +35,7 @@ void Satifiable(bool sat) {
     bool K[2] = { false, true };
     bool M[2] = { false, true };
     bool A[2] = { false, true };
-    bool P1, P2,C;
+    bool P1, P2, C;
     while (!sat) {
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
@@ -43,7 +43,7 @@ void Satifiable(bool sat) {
                     P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
                     P2 = evaluateOr(A[k], M[j]);
                     C = evaluateOr(A[k], evaluateNot(K[i]));
-                    if ((P1 && P2 && C ) == 1) {
+                    if ((P1 && P2 && C) == 1) {
                         sat = true;
                         break;
                     }
@@ -61,7 +61,6 @@ void Satifiable(bool sat) {
         cout << "The set of statements is satisfiable" << endl;
 }
 
-
 void Valid(bool val) {
     bool K[2] = { false, true };
     bool M[2] = { false, true };
@@ -74,7 +73,7 @@ void Valid(bool val) {
                     P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
                     P2 = evaluateOr(A[k], M[j]);
                     C = evaluateOr(A[k], evaluateNot(K[i]));
-                    if ((C==1) && ((P1 && P2) != 1)) {
+                    if ((!C) && (P1 && P2)) {
                         val = false;
                         break;
                     }
@@ -83,28 +82,26 @@ void Valid(bool val) {
         }
         break;
     }
-    if (val) {
+    if (!val) {
         cout << endl;
         cout << "The set of statements is Valid" << endl;
         cout << endl;
     }
     else
-        cout << "The set of statements is Falseviable" << endl;
+        cout << "The set of statements is Falsifiable" << endl;
 }
 
 int main() {
 
     cout << "Truth Table:\n";
+    cout << endl;
     cout << "K\tM\tA\tP1\tP2\tConclusion\n";
     calculateTruthTable();
-
+    cout << endl;
     bool sat = false;
     Satifiable(sat);
 
-
     bool valid = true;
     Valid(valid);
-
-
     return 0;
 }
