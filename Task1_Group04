@@ -55,7 +55,6 @@ void Satifiable(bool sat) {
     if (!sat) {
         cout << endl;
         cout << "The set of statements is not satisfiable" << endl;
-        cout << "The changed is removing the not gate for (B & ~B) to (B & B)" << endl;
         cout << endl;
     }
     else
@@ -75,7 +74,7 @@ void Valid(bool val) {
                     P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
                     P2 = evaluateOr(A[k], M[j]);
                     C = evaluateOr(A[k], evaluateNot(K[i]));
-                    if ((P1 && P2 && C) != 1) {
+                    if ((C==1) && ((P1 && P2) != 1)) {
                         val = false;
                         break;
                     }
@@ -90,7 +89,7 @@ void Valid(bool val) {
         cout << endl;
     }
     else
-        cout << "The set of statements is Falseviaable" << endl;
+        cout << "The set of statements is Falseviable" << endl;
 }
 
 int main() {
