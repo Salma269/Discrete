@@ -19,7 +19,7 @@ bool simplifiedExpression(bool A, bool B, bool C) {
 }
 
 
-void printTruthTable(bool change, bool A[],bool B[], bool C[] ) { // evaluate the trutt table
+void printTruthTable(bool change, bool A[],bool B[], bool C[] ) { // evaluate the truth table
     if (!change) {
         cout << "A\tB\tC\t(A || B)\t(A & B)\t\t[(A || B) & (A & B)]\t(B & ~B)\t(C & B)\t\tOrig\t(A || C)\tSimp\n";
     }
@@ -123,13 +123,13 @@ int main() {
     cout << "Digital Logic Circuit Simplification" << endl;
     cout << endl;
     change = false;
-    // evaluate tryth table
+    // evaluate truth table
     printTruthTable(change, A,B,C);
     Satifiable();
     cout << "Do you want to make the logical circuit satisfiable? (Y/N)" << endl;
     cin >> ans;
     if (ans == "Y" || ans == "y") {
-        // evaluate tryth table after modification
+        // evaluate truth table after modification
         printTruthTable(change, A, B, C); // modification
         Satifiable();
     }
