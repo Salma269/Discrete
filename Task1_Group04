@@ -6,7 +6,7 @@ bool evaluateStatement(bool p, bool q) {
     return (!p || q); // return (p->q)
 }
 bool evaluateOr(bool p, bool q) {
-    return (p || q);
+    return (p || q); 
 }
 bool evaluateNot(bool p) {
     return (!p);
@@ -14,32 +14,26 @@ bool evaluateNot(bool p) {
 bool evaluateAnd(bool p, bool q) {
     return (p & q);
 }
-void calculateTruthTable() {
-    bool K[2] = { false, true };
-    bool M[2] = { false, true };
-    bool A[2] = { false, true };
+void calculateTruthTable(bool K[], bool M[], bool A[]) {
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 2; ++j) {
-            for (int k = 0; k < 2; ++k) {
+            for (int k = 0; k < 2; ++k) { // print all possible combination of the truth table
                 cout << K[i] << "\t" << M[j] << "\t" << A[k] << "\t" << evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j]))) << "\t" << evaluateOr(A[k], M[j]) << "\t" << evaluateOr(A[k], evaluateNot(K[i])) << endl;
             }
         }
     }
 }
-void Satifiable(bool sat) {
-    bool K[2] = { false, true };
-    bool M[2] = { false, true };
-    bool A[2] = { false, true };
+void Satifiable(bool sat,bool K[], bool M[] , bool A[]) {
     bool P1, P2, C;
-    while (!sat) {
+    while (!sat) {  //while the set of statemnts is not satisfiable
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
-                for (int k = 0; k < 2; ++k) {
-                    P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
-                    P2 = evaluateOr(A[k], M[j]);
-                    C = evaluateOr(A[k], evaluateNot(K[i]));
-                    if ((P1 && P2 && C) == 1) {
-                        sat = true;
+                for (int k = 0; k < 2; ++k) { //iteraite on every row in the truth table
+                    P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j]))); // the first paremisis value at row i
+                    P2 = evaluateOr(A[k], M[j]);// the second paremisis value at row i
+                    C = evaluateOr(A[k], evaluateNot(K[i]));// the conclustion value at row i
+                    if ((P1 && P2 && C) == 1) { // if any row has all three of P1,P2 and conclution are true
+                        sat = true; // the set of statemnts is satisfiable
                         break;
                     }
                 }
@@ -56,20 +50,17 @@ void Satifiable(bool sat) {
         cout << "The set of statements is satisfiable" << endl;
 }
 
-void Valid(bool val) {
-    bool K[2] = { false, true };
-    bool M[2] = { false, true };
-    bool A[2] = { false, true };
+void Valid(bool val,bool K[], bool M[], bool A[]) {
     bool P1, P2, C;
-    while (!val) {
+    while (!val) { //while the set of statemnts are Valid
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
-                for (int k = 0; k < 2; ++k) {
-                    P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
-                    P2 = evaluateOr(A[k], M[j]);
-                    C = evaluateOr(A[k], evaluateNot(K[i]));
-                    if ((!C) && (P1 && P2)) {
-                        val = false;
+                for (int k = 0; k < 2; ++k) {//iteraite on every row in the truth table
+                    P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j]))); // the first paremisis value at row i
+                    P2 = evaluateOr(A[k], M[j]); // the second paremisis value at row i
+                    C = evaluateOr(A[k], evaluateNot(K[i])); // the conclustion value at row i
+                    if ((!C) && (P1 && P2)) { // if at any row P1,P2 are true and conclution is not true
+                        val = false; // the set of statemnts is not valid
                         break;
                     }
                 }
@@ -98,12 +89,15 @@ int main() {
     cout << "Truth Table:\n";
     cout << endl;
     cout << "K\tM\tA\tP1\tP2\tConclusion\n";
-    calculateTruthTable();
+    bool K[2] = { false, true }; // bool values of K
+    bool M[2] = { false, true }; // bool values of M 
+    bool A[2] = { false, true }; // bool values of A 
+    calculateTruthTable(K,M,A);
     cout << endl;
     bool sat = false;
-    Satifiable(sat);
+    Satifiable(sat,K,M,A);
 
     bool valid = true;
-    Valid(valid);
+    Valid(valid,K,M,A);
     return 0;
 }
