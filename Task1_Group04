@@ -1,74 +1,44 @@
 #include <iostream>
+#include <string>
 using namespace std;
 
-bool change;
-
-bool originalExpression(bool A, bool B, bool C) {
-    return ((A || B) && (A && B)) || (B && !B) || (C && B);
+bool evaluateStatement(bool p, bool q) {
+    return (!p || q); // return (p->q)
 }
-
-bool ModifiedExpression(bool A, bool B, bool C) {
-    return ((A || B) && (A && B)) || (B && B) || (C && B);
+bool evaluateOr(bool p, bool q) {
+    return (p || q);
 }
-
-bool simplifiedExpression(bool A, bool B, bool C) {
-    return (A || C) && B;
+bool evaluateNot(bool p) {
+    return (!p);
 }
-
-
-void printTruthTable(bool change, bool A[],bool B[], bool C[] ) {
-    if (!change) {
-        cout << "A\tB\tC\t(A || B)\t(A & B)\t\t[(A || B) & (A & B)]\t(B & ~B)\t(C & B)\t\tOrig\t(A || C)\tSimp\n";
-    }
-    else {
-        cout << "A\tB\tC\t(A || B)\t(A & B)\t\t[(A || B) & (A & B)]\t(B & B)\t\t(C & B)\t\tOrig\tSimp\n";
-    }
+bool evaluateAnd(bool p, bool q) {
+    return (p & q);
+}
+void calculateTruthTable() {
+    bool K[2] = { false, true };
+    bool M[2] = { false, true };
+    bool A[2] = { false, true };
     for (int i = 0; i < 2; ++i) {
         for (int j = 0; j < 2; ++j) {
             for (int k = 0; k < 2; ++k) {
-                if (!change) {
-                    bool original = originalExpression(A[i], B[j], C[k]);
-                    bool simplified = simplifiedExpression(A[i], B[j], C[k]);
-                    cout << A[i] << "\t" << B[j] << "\t" << C[k] << "\t" << (A[i] || B[j]) << "\t\t" << (A[i] && B[j]) << "\t\t\t" << ((A[i] || B[j]) && (A[i] && B[j])) << "\t\t" << (B[j] && !B[j]) << "\t\t" << (C[k] && B[j]) << "\t\t" << original << "\t" << (A[i] || C[k]) << "\t\t" << simplified << endl;
-                    if (original != simplified) {
-                        cout << "The two expressions are not equivalent." << endl;
-                    }
-                }
-                else {
-                    bool original = ModifiedExpression(A[i], B[j], C[k]);
-                    bool simplified = B[j];
-                    cout << A[i] << "\t" << B[j] << "\t" << C[k] << "\t" << (A[i] || B[j]) << "\t\t" << (A[i] && B[j]) << "\t\t\t" << ((A[i] || B[j]) && (A[i] && B[j])) << "\t\t" << (B[j] && B[j]) << "\t\t" << (C[k] && B[j]) << "\t\t" << original << "\t" << simplified << "\n";
-                    if (original != simplified) {
-                        cout << "The two expressions are not equivalent." << endl;
-                    }
-                }
+                cout << K[i] << "\t" << M[j] << "\t" << A[k] << "\t" << evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j]))) << "\t" << evaluateOr(A[k], M[j]) << "\t" << evaluateOr(A[k], evaluateNot(K[i])) << endl;
             }
         }
     }
-    cout << endl;
-    cout << "The two expressions are  equivalent." << endl << endl;
 }
-
-void Satifiable() {
-    bool sat = false;
+void Satifiable(bool sat) {
+    bool K[2] = { false, true };
+    bool M[2] = { false, true };
     bool A[2] = { false, true };
-    bool B[2] = { false, true };
-    bool C[2] = { false, true };
-    bool g1, g2, g3, g4, g5, g6;
+    bool P1, P2, C;
     while (!sat) {
         for (int i = 0; i < 2; ++i) {
             for (int j = 0; j < 2; ++j) {
                 for (int k = 0; k < 2; ++k) {
-                    g1 = (A[i] || B[j]);
-                    g2 = (A[i] && B[j]);
-                    g3 = ((A[i] || B[j]) && (A[i] && B[j]));
-                    if (!change)
-                        g4 = (B[j] && !B[j]);
-                    else
-                        g4 = (B[j] && B[j]);
-                    g5 = (C[k] && B[j]);
-                    g6 = (A[i] || C[k]);
-                    if ((g1 && g2 && g3 && g4 && g5 && g6) == 1) {
+                    P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
+                    P2 = evaluateOr(A[k], M[j]);
+                    C = evaluateOr(A[k], evaluateNot(K[i]));
+                    if ((P1 && P2 && C) == 1) {
                         sat = true;
                         break;
                     }
@@ -78,49 +48,62 @@ void Satifiable() {
         break;
     }
     if (!sat) {
-        change = true;
         cout << endl;
-        cout << "The logical circuit is not satisfiable" << endl;
-        cout << "The changed is removing the not gate for (B & ~B) to (B & B)" << endl;
+        cout << "The set of statements is not satisfiable" << endl;
         cout << endl;
     }
     else
-        cout << "The logical circuit is satisfiable" << endl;
+        cout << "The set of statements is satisfiable" << endl;
+}
+
+void Valid(bool val) {
+    bool K[2] = { false, true };
+    bool M[2] = { false, true };
+    bool A[2] = { false, true };
+    bool P1, P2, C;
+    while (!val) {
+        for (int i = 0; i < 2; ++i) {
+            for (int j = 0; j < 2; ++j) {
+                for (int k = 0; k < 2; ++k) {
+                    P1 = evaluateStatement(A[k], evaluateNot(evaluateOr(K[i], M[j])));
+                    P2 = evaluateOr(A[k], M[j]);
+                    C = evaluateOr(A[k], evaluateNot(K[i]));
+                    if ((!C) && (P1 && P2)) {
+                        val = false;
+                        break;
+                    }
+                }
+            }
+        }
+        break;
+    }
+    if (!val) {
+        cout << endl;
+        cout << "The set of statements is Valid" << endl;
+        cout << endl;
+    }
+    else
+        cout << "The set of statements is Falsifiable" << endl;
 }
 
 int main() {
-    bool A[2] = { false, true };
-    bool B[2] = { false, true };
-    bool C[2] = { false, true };
-    string a, b, c, notb, ans;
-    cout << "Enter first input to the first OR gate: ";
-    cin >> a;
-    cout << "Enter second input to the first OR gate: ";
-    cin >> b;
-    cout << "Enter first input to the first AND gate: ";
-    cin >> a;
-    cout << "Enter second input to the first AND gate: ";
-    cin >> b;
-    cout << "Enter first input to the second AND gate: ";
-    cin >> b;
-    cout << "Enter second input to the second AND gate: ";
-    cin >> notb; 
-    cout << "Enter first input to the third AND gate: ";
-    cin >> b;
-    cout << "Enter second input to the third AND gate: ";
-    cin >> c;
+    string p1, p2, c;
+    cout << "Please enter the first premisis: " << endl;
+    getline(cin, p1);    
+    cout << "Please enter the second premisis: " << endl;
+    getline(cin, p2);
+    cout << "Please enter the conclution: " << endl;
+    getline(cin, c);
     cout << endl;
-    cout << "Digital Logic Circuit Simplification" << endl;
+    cout << "Truth Table:\n";
     cout << endl;
-    change = false;
-    printTruthTable(change, A,B,C);
-    Satifiable();
-    cout << "Do you want to make the logical circuit satisfiable? (Y/N)" << endl;
-    cin >> ans;
-    if (ans == "Y" || ans == "y") {
-        printTruthTable(change, A, B, C); // modification
-        Satifiable();
-    }
+    cout << "K\tM\tA\tP1\tP2\tConclusion\n";
+    calculateTruthTable();
+    cout << endl;
+    bool sat = false;
+    Satifiable(sat);
+
+    bool valid = true;
+    Valid(valid);
     return 0;
 }
-
